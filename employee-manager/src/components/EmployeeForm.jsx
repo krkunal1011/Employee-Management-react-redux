@@ -1,58 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addEmployee } from "../redux/employeeSlice";
+import { addEmployee, updateEmployee } from "../redux/employeeSlice";
 
-export default function EmployeeForm() {
+export default function EmployeeForm({ editingEmployee, setEditingEmployee }) {
   const dispatch = useDispatch();
 
-  const [form, setForm] = useState({
-    name: "",
-    role: "",
-  });
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  useEffect(() => {
+    if (editingEmployee) {
+      setName(editingEmployee.name);
+      setRole(editingEmployee.role);
+    }
+  }, [editingEmployee]);
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.name || !form.role) return;
+    if (!name || !role) return;
 
-    dispatch(addEmployee(form));
+    if (editingEmployee) {
+      dispatch(
+        updateEmployee({
+          id: editingEmployee.id,
+          name,
+          role,
+        })
+      );
+      setEditingEmployee(null);
+    } else {
+      dispatch(addEmployee({ name, role }));
+    }
 
-    setForm({ name: "", role: "" });
-  }
+    setName("");
+    setRole("");
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded shadow space-y-4"
-    >
-      <h2 className="text-xl font-semibold">Add Employee</h2>
+    <div className="bg-white shadow p-6 rounded">
+      <h2 className="text-xl font-semibold mb-4">
+        {editingEmployee ? "Edit Employee" : "Add Employee"}
+      </h2>
 
-      <input
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        placeholder="Name"
-        className="border p-2 w-full rounded"
-      />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          className="border p-2 w-full rounded"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-      <input
-        name="role"
-        value={form.role}
-        onChange={handleChange}
-        placeholder="Role"
-        className="border p-2 w-full rounded"
-      />
+        <input
+          className="border p-2 w-full rounded"
+          placeholder="Role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        />
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Add
-      </button>
-    </form>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          type="submit"
+        >
+          {editingEmployee ? "Update" : "Add"}
+        </button>
+      </form>
+    </div>
   );
 }
