@@ -1,14 +1,14 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
-const intitialState ={
+const initialState ={
     list: []
 };
 
 const employeeSlice = createSlice({
     name: "employees",
-    initialState,
+    initialState ,
     reducers:{
         addEmployee: {
-            reducers(state, action) {
+            reducer(state, action) {
                state.list.push(action.payload);
             },
             prepare(data) {
