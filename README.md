@@ -37,6 +37,7 @@ Responsive UI using Tailwind
 Clean component structure
 
 📂 Project Structure
+```
 src/
  ├── app/
  │   ├── store.js
@@ -48,3 +49,4 @@ src/
  │   └── EmployeeList.jsx
  ├── App.jsx
  └── main.jsx
+```
